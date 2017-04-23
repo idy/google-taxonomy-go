@@ -145,7 +145,7 @@ func (t *Taxonomy) GetCategoryInfo(id int64, lang string) (*CategoryInfo, error)
 	}
 	return inf, nil
 }
-func (t *Taxonomy) translateCategoryData(dat *categoryData, lang string) error {
+func (t *Taxonomy) translateCategoryData(dat *CategoryData, lang string) error {
 	ld := t.langDict[lang]
 	if ld == nil {
 		return fmt.Errorf("language %s is not found", lang)
@@ -160,7 +160,7 @@ func (t *Taxonomy) translateCategoryData(dat *categoryData, lang string) error {
 	return nil
 }
 func (t *Taxonomy) translate(inf *CategoryInfo, lang string) error {
-	cd := categoryData{
+	cd := CategoryData{
 		ID: inf.ID,
 	}
 	if err := t.translateCategoryData(&cd, lang); err != nil {
@@ -183,12 +183,12 @@ func (t *Taxonomy) translate(inf *CategoryInfo, lang string) error {
 	return nil
 }
 
-type categoryData struct {
+type CategoryData struct {
 	ID   int64
 	Name string
 }
 
-func (dat *categoryData) String() string {
+func (dat *CategoryData) String() string {
 	if len(dat.Name) > 0 {
 		return dat.Name
 	}
@@ -200,8 +200,8 @@ type CategoryInfo struct {
 	Language string
 	ID       int64
 	Name     string
-	Fullpath []*categoryData
-	Children []*categoryData
+	Fullpath []*CategoryData
+	Children []*CategoryData
 }
 
 func (inf *CategoryInfo) String() string {
@@ -254,11 +254,11 @@ func (c *category) AppendChild(ch *category) {
 func (c *category) GetInfo() *CategoryInfo {
 	inf := CategoryInfo{
 		ID:       c.ID,
-		Fullpath: []*categoryData{},
-		Children: []*categoryData{},
+		Fullpath: []*CategoryData{},
+		Children: []*CategoryData{},
 	}
 	for id := range c.Children {
-		inf.Children = append(inf.Children, &categoryData{
+		inf.Children = append(inf.Children, &CategoryData{
 			ID: id,
 		})
 	}
@@ -269,7 +269,7 @@ func (c *category) GetInfo() *CategoryInfo {
 		it = it.Parent
 	}
 	for i := range prs {
-		inf.Fullpath = append(inf.Fullpath, &categoryData{
+		inf.Fullpath = append(inf.Fullpath, &CategoryData{
 			ID: prs[len(prs)-i-1],
 		})
 	}
