@@ -10,17 +10,18 @@ import (
 	"github.com/xreception/google-taxonomy-go/data"
 )
 
-const KeyLanguage = "en-US"
-
-func NewTaxonomy(langs []string) (*Taxonomy, error) {
+// NewTaxonomy returns a taxonomy
+// Build taxonomy with key language, and add language translations with langs
+func NewTaxonomy(keyLanguage string, langs []string) (*Taxonomy, error) {
 	tx := Taxonomy{
-		rootIndex: make(categoryIDIndex),
-		idIndex:   make(categoryIDIndex),
-		langDict:  make(languageDictionary),
-		nameIndex: make(categoryNameIndex),
+		keyLanguage: keyLanguage,
+		rootIndex:   make(categoryIDIndex),
+		idIndex:     make(categoryIDIndex),
+		langDict:    make(languageDictionary),
+		nameIndex:   make(categoryNameIndex),
 	}
 	td := taxonomyData{
-		Language: KeyLanguage,
+		Language: keyLanguage,
 		LoadFunc: data.Asset,
 	}
 	td.Parse()
@@ -30,7 +31,7 @@ func NewTaxonomy(langs []string) (*Taxonomy, error) {
 	}
 	tds := []*taxonomyData{}
 	for _, lang := range langs {
-		if lang == KeyLanguage {
+		if lang == keyLanguage {
 			continue
 		}
 		td := taxonomyData{
@@ -49,10 +50,11 @@ func NewTaxonomy(langs []string) (*Taxonomy, error) {
 }
 
 type Taxonomy struct {
-	rootIndex categoryIDIndex
-	idIndex   categoryIDIndex
-	langDict  languageDictionary
-	mux       sync.RWMutex
+	keyLanguage string
+	rootIndex   categoryIDIndex
+	idIndex     categoryIDIndex
+	langDict    languageDictionary
+	mux         sync.RWMutex
 
 	// nameIndex only used when init
 	nameIndex categoryNameIndex
@@ -152,7 +154,7 @@ func (t *Taxonomy) translateCategoryData(dat *CategoryData, lang string) error {
 	}
 	if name, ok := ld[dat.ID]; ok {
 		dat.Name = name
-	} else if name, ok := t.langDict[KeyLanguage][dat.ID]; ok {
+	} else if name, ok := t.langDict[t.keyLanguage][dat.ID]; ok {
 		dat.Name = name
 	} else {
 		return fmt.Errorf("%d not found", dat.ID)

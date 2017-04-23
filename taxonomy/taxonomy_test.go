@@ -5,8 +5,10 @@ import (
 	"testing"
 )
 
+const KeyLanguage = "en-US"
+
 func TestTaxonomyGetRootsCategoryInfo(t *testing.T) {
-	tx, err := NewTaxonomy([]string{})
+	tx, err := NewTaxonomy(KeyLanguage, []string{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,7 +34,7 @@ func TestTaxonomyLanguageCompatibility(t *testing.T) {
 		"pt-BR",
 		"sv-SE",
 	}
-	tx, err := NewTaxonomy(langs)
+	tx, err := NewTaxonomy(KeyLanguage, langs)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +60,7 @@ func TestTaxonomyLanguageCompatibility(t *testing.T) {
 	}
 }
 func TestNewTaxonomy(t *testing.T) {
-	_, err := NewTaxonomy([]string{})
+	_, err := NewTaxonomy(KeyLanguage, []string{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +89,7 @@ func TestTaxonomyGetCategoryInfo(t *testing.T) {
 	}
 	for _, cas := range cases {
 		t.Run(fmt.Sprintf("New taxonomy in %s", cas.lang), func(t *testing.T) {
-			tx, err := NewTaxonomy([]string{cas.lang})
+			tx, err := NewTaxonomy(KeyLanguage, []string{cas.lang})
 			if err != nil {
 				t.Fatal(err)
 			}
