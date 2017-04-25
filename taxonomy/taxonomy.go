@@ -7,7 +7,7 @@ import (
 
 	"sort"
 
-	"github.com/xreception/google-taxonomy-go/data"
+	"github.com/go-google-taxonomy/google-taxonomy/data"
 )
 
 // NewTaxonomy returns a taxonomy
